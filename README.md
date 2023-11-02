@@ -20,7 +20,7 @@ El cielo ha sido un campo de batalla durante siglos. Desde los primitivos globos
 | Avión  | 3 | 2 | 4x3x2 (Forma “t”) | ![](https://udesa-pc.github.io/tps/tpf/img/plane.png) |
 | Elevador Espacial  | 1 | 4 | 1x1x10 | ![](https://udesa-pc.github.io/tps/tpf/img/elevator.png) |
 
-##Cómo Jugar
+## Cómo Jugar
 ##### Momento Inicial
 Cada jugador posiciona sus vehículos en el tablero. Los vehículos pueden ser rotados horizontalmente, pero no pueden superponerse. Los vehículos no pueden rotar verticalmente.
 
@@ -34,7 +34,7 @@ El juego se desarrolla por turnos, donde cada jugador tiene oportunidad de reali
 
 + **Fin del Turno:** Una vez realizado el disparo, termina el turno del jugador y comienza el turno del oponente.
 
-###Reglas del Juego#
+### Reglas del Juego
 + **Tocado:** Si una coordenada de un disparo coincide con una de las coordenadas ocupadas por un vehículo, se considera que ha sido “tocado”. La resistencia del vehículo se reduce en 1.
 
 + **Derribado:** Cuando la resistencia de un vehículo llega a cero debido a uno o varios “tocado”, el vehículo es considerado “derribado” y ya no participa en el juego.
@@ -87,5 +87,5 @@ def get_starting_board():
 ### Interfaz
 La interfaz será principalmente a través de la línea de comando, donde los jugadores pueden ingresar coordenadas para disparar. Se espera una visualización en 3D utilizando matplotlib para mostrar el campo de batalla, los vehículos y el resultado de los disparos.
 
-###Evaluación
+### Evaluación
 Para aprobar, es fundamental que el código se ejecute correctamente sin lanzar excepciones; cumpliendo con los requerimientos de la consigna. Además, se evaluará la calidad del código y la calidad de los comentarios y documentación. Cualquier detalle adicional que agreguen será tenido en cuenta para la nota final.
