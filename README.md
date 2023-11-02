@@ -9,7 +9,9 @@ El cielo ha sido un campo de batalla durante siglos. Desde los primitivos globos
 + Dimensiones del tablero  15 x 15 x 10
 	+ **X**  y **Y**  representan la superficie horizontal.
 	+ **Z**  representa la altura.
+ 
 ![](https://udesa-pc.github.io/tps/tpf/img/board.png)
+
 
 | Vehiculo  | Cantidad | Resistencia (número de golpes) | Tamaño (celdas) | Forma |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
