@@ -84,6 +84,7 @@ def get_starting_board():
     """
 ```
 </pre>
+
 ### Interfaz
 La interfaz será principalmente a través de la línea de comando, donde los jugadores pueden ingresar coordenadas para disparar. Se espera una visualización en 3D utilizando matplotlib para mostrar el campo de batalla, los vehículos y el resultado de los disparos.
 
