@@ -8,9 +8,9 @@ El cielo ha sido un campo de batalla durante siglos. Desde los primitivos globos
 
 ## Especificaciones
 #### - Tablero de juego
-Vehiculo  | Cantidad | Resistencia (número de golpes) | Tamaño (celdas) | Forma
-------------- | -------------
-Globo  | 5 | 1 | 3x3x3 | ![](https://udesa-pc.github.io/tps/tpf/img/balloon.png)
-Zeppelin  | 2 | 3 | 5x2x2 | ![](https://udesa-pc.github.io/tps/tpf/img/zeppelin.png)
-Avión  | 3 | 2 | 4x3x2 (Forma “t”) | ![](https://udesa-pc.github.io/tps/tpf/img/plane.png)
-Elevador Espacial  | 1 | 4 | 1x1x10 | ![](https://udesa-pc.github.io/tps/tpf/img/elevator.png)
+| Vehiculo  | Cantidad | Resistencia (número de golpes) | Tamaño (celdas) | Forma |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| Globo  | 5 | 1 | 3x3x3 | ![](https://udesa-pc.github.io/tps/tpf/img/balloon.png) |
+| Zeppelin  | 2 | 3 | 5x2x2 | ![](https://udesa-pc.github.io/tps/tpf/img/zeppelin.png) |
+| Avión  | 3 | 2 | 4x3x2 (Forma “t”) | ![](https://udesa-pc.github.io/tps/tpf/img/plane.png) |
+| Elevador Espacial  | 1 | 4 | 1x1x10 | ![](https://udesa-pc.github.io/tps/tpf/img/elevator.png) |
