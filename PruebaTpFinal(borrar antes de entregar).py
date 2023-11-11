@@ -44,21 +44,24 @@ class Vehiculo:
         self.nombre = nombre
         self.vida = vida
         self.cantidad = cantidad
-        self.contador = self.cantidad - 1
+        self.contador = 0 #inicializo en 0
         self.tamaño = tamaño
         self.x, self.y, self.z = np.indices((15, 15, 10))
-        self.rotacion = 0
+        self.rotacion = 0 #inicializar en 0
+
     def ColocarVehiclo(self):
-        self.cantidad -= 1
+        self.contador += 1  #incrementa el contador al colocar el vehiculo
         Text_coor = self.RotarVehiculo()
-        return preguntar_coordenadas(f"Ingrese el nucleo de {self.nombre} {self.contador - self.cantidad} {Text_coor}: " , f"Datos invalidos\nIngrese el nucleo de {self.nombre} {self.contador - self.cantidad} (x y z): " , self.tamaño)
+        return preguntar_coordenadas(f"Jugador 1, ingrese las coordenadas de {self.nombre} {self.contador} {Text_coor}: ",
+                                     f"Datos invalidos\nIngrese el nucleo de {self.nombre} {self.contador} (x y z): ",
+                                     self.tamaño)
     def RotarVehiculo(self):
-        num_rot = int(input(f"Ingrese la cantidad de veces que quiere rotar el {self.nombre} {self.contador - (self.cantidad - 1)}: "))
+        num_rot = int(input(f"Ingrese la cantidad de veces que quiere rotar el {self.nombre} {self.contador}: "))
         self.rotacion = 90*num_rot%360
         return "(x y z)" if self.rotacion == 0 or self.rotacion == 180 else "(y x z)"
+
     def RecibirGolpe(self):
         pass
-
     
 class Globo(Vehiculo):
     def __init__(self):
