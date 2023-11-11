@@ -29,15 +29,6 @@ def chequear_coordenadas(texto_num:str, tamaño_x: int = 0, tamaño_y: int = 0, 
         return True
     else: 
         return False
-    
-
-class Tablero:
-    def __init__(self) -> None:
-        pass
-
-
-
-
 
 class Vehiculo:
     def __init__(self, nombre, vida, cantidad, tamaño):
@@ -100,8 +91,6 @@ class Zeppelin(Vehiculo):
     def RecibirGolpe(self):
         return self.vida -1
 
-
-
 class Avion(Vehiculo):
     def __init__(self) -> None:
         super().__init__(nombre="avion",vida= 2, cantidad = 3, tamaño = (4,3,2))
@@ -155,7 +144,15 @@ class ElevadorEspacial(Vehiculo):
         return elevevador_espacial_pltshow
     def RecibirGolpe(self):
         return self.vida -1
+class Tablero:
+    def __init__(self, dim_x, dim_y, dim_z):
 
+        self.dim_x = dim_x
+        self.dim_y = dim_y
+        self.dim_z = dim_z
+
+        self.tablero = np.zeros((dim_x, dim_y, dim_z))
+        self.tablero_disparos = np.full((dim_x, dim_y, dim_z), '?', dtype=str)
 
 x,y,z = np.indices((15, 15, 10))
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
