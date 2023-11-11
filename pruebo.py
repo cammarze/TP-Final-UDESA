@@ -27,11 +27,10 @@ class Vehiculo:
     def ColocarVehiculo(self):
         self.contador += 1  #incrementa el contador al colocar el vehiculo
         Text_coor = self.RotarVehiculo()
-        print("Jugador 1, ingrese las coordenadas de los vehiculos:")
+        print("Jugador 1, ingrese las coordenadas del vehiculo:")
         return preguntar_coordenadas(f"-{self.nombre} #{self.contador} {Text_coor}: ",
                                      f"Datos invalidos\nIngrese el nucleo de {self.nombre} {self.contador} (x y z): ",
                                      self.tamaño)
-
     
     def RotarVehiculo(self):
         num_rot = int(input(f"Ingrese la cantidad de veces que quiere rotar el {self.nombre} {self.contador}: "))
@@ -157,11 +156,19 @@ tablero = Tablero(15, 15, 10)
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 fig.set_size_inches(6, 6)
 
+colores = {Avion: "lightgray", Globo: "darkred", Zeppelin: "midnightblue", ElevadorEspacial: "darkslategray"}
+
+
 for vehiculo in vehiculos:
     for i in range(vehiculo.cantidad):  #iterar en base a la cantidad de cada vehiculo
         colocar = vehiculo.ColocarVehiculo()
+        color = colores[type(vehiculo)] #accede al tipo de la clase 
         tablero.tablero[colocar] = True #inidico que hay un vehiculo (True) en las coordenadas ingresaras 
+        ax.voxels(colocar, color=color, edgecolor='k')
 
-ax.voxels(tablero.tablero, color="purple", edgecolor='k')
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
 
 plt.show()
+
