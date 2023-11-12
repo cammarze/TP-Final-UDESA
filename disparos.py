@@ -15,20 +15,20 @@ def disparo(self):
     if self.tablero[ubicacion[0], ubicacion[1], ubicacion[2]] == 1:  #cheuqeo si hay un vehiculo en la coordenada ingresada
 
         vehiculos = [Avion(), Globo(), Zeppelin(), ElevadorEspacial()] #lista para iterar sobre las clases de los vehiculos
-        for vehiculo in vehiculos:
-            vehiculo.RecibirGolpe()
-            if vehiculo.vida == 0:
+        for vehiculo in vehiculos: #ITERA DENTRO DE VEHICULOS Y ACCEDE A CADA CLASE
+            vehiculo.RecibirGolpe() #LLAMA AL METODO recibir golpe ya que el chabon recibio un golpe 
+            if vehiculo.vida == 0: #si la vida LLEGa a 0, se ejecuta este if
                 #marco que el vehiculo fue derrotado
                 self.tablero[ubicacion[0], ubicacion[1], ubicacion[2]] = 0
-                self.guardar_disparos["Sunk"] = ubicacion #lo guardo en el diccionario
+                self.guardar_disparos[ubicacion] = "Sunk" #lo cAambie
                 return self.guardar_disparos
             
         #el vehiculo fue tocado pero no derrotado    
-        self.guardar_disparos["Hit"] = ubicacion
+        self.guardar_disparos[ubicacion] = "Hit"
         return self.guardar_disparos
     else:
         #no se hallo ningun vehiculp en la coordenada ingresada
-        self.guardar_disparos["Miss"] = ubicacion
+        self.guardar_disparos[ubicacion] = "Miss"
         return self.guardar_disparos
 
    
