@@ -3,7 +3,8 @@ import pruebo as pr
 
 """Buenas, aca asumo que la clase Tablero tiene como atributo:
     self.guardar_disparos = {}
-falta agregar cosas como chequear si ya le pego en la coordenada ingresada pero bueno, lo voy subiendo por si ven algun error (ya que no lo prob;e, o si consideran que falta algo en este codigo)
+falta agregar cosas como chequear si ya le pego en la coordenada ingresada pero bueno, 
+lo voy subiendo por si ven algun error (ya que no lo prob;e, o si consideran que falta algo en este codigo)
 """
 
 def disparo(self):
