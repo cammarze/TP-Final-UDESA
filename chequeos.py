@@ -21,9 +21,4 @@ def check_coordenadas(texto_num:str, tamaño_x: int = 0, tamaño_y: int = 0, tam
     else: 
         return False
 
-def preguntar_coordenadas(prompt: str, prompt_fallido: str,tamaño : tuple = (0,0,0)):
-    coordenada = input(prompt)
-    while len(coordenada.split()) != 3 or not ch.check_coordenadas(coordenada, tamaño[0], tamaño[1], tamaño[2]):
-        coordenada = input(prompt_fallido)
-    return map(int,coordenada.split())
     
