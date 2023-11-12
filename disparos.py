@@ -10,8 +10,6 @@ def disparo(self):
     ubicacion = pr.preguntar_coordenadas("Ingrese las coordenadas: ",
                                          "Coordenadas invalidas\nIngrese nuevamente las coordenadas: ",
                                          tamano=(self.dim_x, self.dim_y, self.dim_z))
-    
-    guardar_disparos = {} #diccionario para guardar os disparos
 
     if self.tablero[ubicacion[0], ubicacion[1], ubicacion[2]] == 1:  #cheuqeo si hay un vehiculo en la coordenada ingresada
 
