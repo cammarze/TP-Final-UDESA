@@ -63,7 +63,7 @@ class Tablero:
             if vehiculo.rotacion in [0,180]: 
                 return (np.all(self.tablero[nuc_x - 1 : nuc_x + 3 , nuc_y : nuc_y + 1 , nuc_z : nuc_z + 1]<=0) and 
                 np.all(self.tablero[nuc_x + check_Avion1[0] : nuc_x + check_Avion1[1] , nuc_y - 1 : nuc_y + 2 , nuc_z : nuc_z + 1]<=0) and 
-                np.all(self.tablero[nuc_x - check_Avion2[0] : nuc_x + check_Avion2[1] , nuc_y : nuc_y + 1 , nuc_z + 1 : nuc_z + 2]<=0))
+                np.all(self.tablero[nuc_x + check_Avion2[0] : nuc_x + check_Avion2[1] , nuc_y : nuc_y + 1 , nuc_z + 1 : nuc_z + 2]<=0))
             else:
                 return (np.all(self.tablero[ nuc_x : nuc_x + 1, nuc_y -1 : nuc_y + 3  , nuc_z : nuc_z + 1]<=0) and 
                 np.all(self.tablero[nuc_x - 1 : nuc_x + 2  , nuc_y + check_Avion1[0] : nuc_y + check_Avion1[1] , nuc_z : nuc_z + 1]<=0) and 
