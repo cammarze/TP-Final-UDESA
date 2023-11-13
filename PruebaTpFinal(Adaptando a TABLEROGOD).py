@@ -51,38 +51,56 @@ class Tablero:
     def check_solapa(self,vehiculo, nuc_x,nuc_y,nuc_z):
         if vehiculo.rotacion in [90,270]:
             nuc_x, nuc_y = nuc_y, nuc_x
-        
+       
         if type(vehiculo) == Globo:
-            check_x1, check_y1, check_z1 = -1, -1, -1
-            check_x2, check_y2, check_z2 = 2, 2, 2
+            return np.all(self.tablero[nuc_x - 1 : nuc_x + 2 , nuc_y - 1 : nuc_y + 2 , nuc_z - 1:nuc_z + 2]<=0)
+       
         elif type(vehiculo) == Zeppelin:
-            check_x1, check_y1, check_z1 = -2, 0, 0
-            check_x2, check_y2, check_z2 = 3, 2, 2
+            check_x = [-2,3]
+            check_y = [0,2]
             if vehiculo.rotacion in [90,270]:
-                check_x1, check_y1 = check_y1, check_x1
-                check_x2, check_y2 = check_y2, check_x2
+                check_x, check_y = check_y, check_x
+            return np.all(self.tablero[nuc_x + check_x[0] : nuc_x + check_x[1] , nuc_y + check_y[0] : nuc_y + check_y[1] , nuc_z : nuc_z + 2]<=0)
+       
         elif type(vehiculo) == Avion:
-            check_x1, check_x2, check_x3, check_x4, check_x5, check_x6 = -1, 3, 1, 2,-1,0
-            check_y1, check_y2, check_y3, check_y4, check_y5, check_y6 = 0, 1, -1, 2,1,1
-            if vehiculo.rotacion in [90,270]:
-                check_x1, check_y1 = check_y1, check_x1
-                check_x2, check_y2 = check_y2, check_x2
-                check_x3, check_y3 = check_y3, check_x3
-                check_x4, check_y4 = check_y4, check_x4
-                check_x5, check_y5 = check_y5, check_x5
-                check_x6, check_y6 = check_y6, check_x6
-                if vehiculo.rotacion == 270:
-                    check_x3, check_x4, check_x5, check_x6 = 1,2,2, 3
-            elif vehiculo.rotacion == 180:
-                check_x3, check_x4, check_x5, check_x6 = 0, 1, 2, 3
-                return np.all(self.tablero[nuc_x + check_x1 : nuc_x + check_x2, nuc_y + check_y1 : nuc_y + check_y2, nuc_z : nuc_z + 1]<=0) and np.all(self.tablero[nuc_x + check_x3 : nuc_x + check_x4, nuc_y + check_y3 : nuc_y + check_y4, nuc_z : nuc_z + 1]<=0) and np.all(self.tablero[nuc_x + check_x5 : nuc_x + check_x6, nuc_y + check_y5 : nuc_y + check_y6, nuc_z + 1  : nuc_z + 2]<=0)
+            check_Avion1 = [1,2]
+            check_Avion2 = [-1,0]
+            if vehiculo.rotacion in [180,270]:
+                check_Avion1 = [0,1]
+                check_Avion2 = [2,3]
+            if vehiculo.rotacion in [0,180]: 
+                return (np.all(self.tablero[nuc_x - 1 : nuc_x + 3 , nuc_y : nuc_y + 1 , nuc_z : nuc_z + 1]<=0) and 
+                np.all(self.tablero[nuc_x + check_Avion1[0] : nuc_x + check_Avion1[1] , nuc_y - 1 : nuc_y + 2 , nuc_z : nuc_z + 1]<=0) and 
+                np.all(self.tablero[nuc_x - check_Avion2[0] : nuc_x + check_Avion2[1] , nuc_y : nuc_y + 1 , nuc_z + 1 : nuc_z + 2]<=0))
+            else:
+                return (np.all(self.tablero[ nuc_x : nuc_x + 1, nuc_y -1 : nuc_y + 3  , nuc_z : nuc_z + 1]<=0) and 
+                np.all(self.tablero[nuc_x - 1 : nuc_x + 2  , nuc_y + check_Avion1[0] : nuc_y + check_Avion1[1] , nuc_z : nuc_z + 1]<=0) and 
+                np.all(self.tablero[nuc_x : nuc_x + 1 , nuc_y + check_Avion2[0] : nuc_y + check_Avion2[1] , nuc_z + 1 : nuc_z + 2]<=0))
         else:    
             return np.all(self.tablero[nuc_x  : nuc_x + 1 , nuc_y : nuc_y + 1 , 0 : 10]<=0)
-        return np.all(self.tablero[nuc_x + check_x1: nuc_x + check_x2, nuc_y + check_y1 : nuc_y + check_y2, nuc_z + check_z1 : nuc_z + check_z2]<=0)
 
 
-
-
+    def colocar_avion(self, nuc_x, nuc_y, nuc_z, avion):
+            if avion.rotacion in [0,180]:
+                if avion.rotacion == 0:
+                    suma_x1 = [1,2]
+                    suma_x2 = [-1,0]
+                else:
+                    suma_x1 = [0,1]
+                    suma_x2 = [2,3]
+                self.tablero[nuc_x - 1 : nuc_x + 3 , nuc_y : nuc_y + 1 , nuc_z : nuc_z + 1] = 1
+                self.tablero[nuc_x + suma_x1[0] : nuc_x + suma_x1[1] , nuc_y - 1 : nuc_y + 2 , nuc_z : nuc_z + 1] = 1
+                self.tablero[nuc_x + suma_x2[0] : nuc_x + suma_x2[1] , nuc_y : nuc_y + 1 , nuc_z + 1 : nuc_z + 2] = 1
+            else:
+                if avion.rotacion == 90:
+                    suma_y1 = [1,2]
+                    suma_y2 = [-1,0]
+                else:
+                    suma_y1 = [0,1]
+                    suma_y2 = [2,3]
+                self.tablero[nuc_x : nuc_x + 1, nuc_y - 1 : nuc_y + 3  , nuc_z : nuc_z + 1] = 1
+                self.tablero[nuc_x - 1 : nuc_x + 2  , nuc_y + suma_y1[0] : nuc_y + suma_y1[1] , nuc_z : nuc_z + 1] = 1
+                self.tablero[ nuc_x : nuc_x + 1 , nuc_y + suma_y2[0] : nuc_y + suma_y2[1], nuc_z + 1 : nuc_z + 2] = 1
 
 
     def RotarVehiculo(self, vehiculo):
@@ -100,31 +118,35 @@ class Tablero:
         nuc_x, nuc_y, nuc_z = preguntar_coordenadas(f"-{vehiculo.nombre} #{vehiculo.contador} {textcoor}: ",
                                      f"Datos invalidos\nIngrese el nucleo de {vehiculo.nombre} {vehiculo.contador} {textcoor}: ",
                                      vehiculo.tamaño)
+        
         while not self.check_solapa(vehiculo, nuc_x, nuc_y, nuc_z):
             print("Solapamiento entre vehiculos. Ingrese otra vez")
             nuc_x, nuc_y, nuc_z = preguntar_coordenadas(f"-{vehiculo.nombre} #{vehiculo.contador} {textcoor}: ", 
                                                         f"Datos invalidos\nIngrese el nucleo de {vehiculo.nombre} {vehiculo.contador} {textcoor}: ",
                                                         vehiculo.tamaño)
+        if vehiculo.rotacion in [90,270]:
+            nuc_x, nuc_y = nuc_y, nuc_x
         if type(vehiculo) == Globo:
             self.tablero[nuc_x - 1: nuc_x + 2, nuc_y - 1: nuc_y + 2, nuc_z -1: nuc_z + 2] = 1
-        if type(vehiculo) == Zeppelin:
+        elif type(vehiculo) == Zeppelin:
             if vehiculo.rotacion in [0,180]:
                 self.tablero[nuc_x - 2: nuc_x + 3, nuc_y: nuc_y + 2, nuc_z : nuc_z + 2] = 1
             else:
-                nuc_x, nuc_y = nuc_y, nuc_x
                 self.tablero[nuc_x: nuc_x + 2, nuc_y - 2: nuc_y + 3, nuc_z : nuc_z + 2] = 1
-        if type(vehiculo) == Avion:
-            pass
-        if type(vehiculo) == ElevadorEspacial:
+        elif type(vehiculo) == Avion:
+            self.colocar_avion(nuc_x, nuc_y, nuc_z,vehiculo)
+        else:
             self.tablero[nuc_x:nuc_x + 1, nuc_y: nuc_y + 1, 0 : 10] = 1 
         vehiculo.contador += 1
     
     
     
     
-    def mostrar_Tablero(self):
+    def mostrar_Tablero(self,vehiculo):
+        colores = {Avion: "lightgray", Globo: "darkred", Zeppelin: "midnightblue", ElevadorEspacial: "darkslategray"}
         fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
         fig.set_size_inches(6, 6)
+        color = colores[type(vehiculo)]
         ax.voxels(self.tablero, color="purple", edgecolor='k')
         plt.show()
 
@@ -168,13 +190,15 @@ class ElevadorEspacial(Vehiculo):
 
 
 tablero = Tablero()
-vehiculos = [Globo, Zeppelin, ElevadorEspacial]
+vehiculos = [Avion, Globo, Zeppelin, ElevadorEspacial]
 for vehiculo in vehiculos:
     vehic = vehiculo()
     for i in range(vehic.cantidad):  #iterar en base a la cantidad de cada vehiculo
         tablero.colocar_Vehiculo(vehic)
-        tablero.mostrar_Tablero()
+        tablero.mostrar_Tablero(vehic)
         
+
+
 
 
 
