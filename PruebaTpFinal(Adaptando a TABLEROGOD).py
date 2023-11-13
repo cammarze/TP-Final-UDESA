@@ -1,12 +1,21 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import random 
 
 
-def preguntar_coordenadas(prompt: str, prompt_fallido: str,tamaño : tuple = (0,0,0)):
-    coordenada = input(prompt)
-    while len(coordenada.split()) != 3 or not chequear_coordenadas(coordenada, *tamaño):
-        coordenada = input(prompt_fallido)
+
+
+
+def preguntar_coordenadas(prompt: str, prompt_fallido: str, jugador,tamaño : tuple = (0,0,0),):
+    if jugador == "Jugador1":
+        coordenada = input(prompt)
+        while len(coordenada.split()) != 3 or not chequear_coordenadas(coordenada, *tamaño):
+            coordenada = input(prompt_fallido)
+    else:
+        coordenada = f"{random.randint(0,14)} {random.randint(0,14)} {random.randint(0,9)}"
+        while not chequear_coordenadas(coordenada, *tamaño):
+            coordenada = f"{random.randint(0,14)} {random.randint(0,14)} {random.randint(0,9)}"
     return map(int,coordenada.split())
 
 def chequear_coordenadas(texto_num:str, tamaño_x: int = 0, tamaño_y: int = 0, tamaño_z: int = 0) -> bool:
@@ -95,26 +104,30 @@ class Tablero:
                 self.tablero[ nuc_x : nuc_x + 1 , nuc_y + suma_y2[0] : nuc_y + suma_y2[1], nuc_z + 1 : nuc_z + 2] = 1
 
 
-    def RotarVehiculo(self, vehiculo):
+    def RotarVehiculo(self, vehiculo, jugador):
         if type(vehiculo) in [Avion, Zeppelin]:
-            num_rot = input(f"Ingrese la cantidad de veces que quiere rotar el {vehiculo.nombre} {vehiculo.contador}: ")
-            while not num_rot.strip().isdecimal():
+            if jugador == "Jugador1":
                 num_rot = input(f"Ingrese la cantidad de veces que quiere rotar el {vehiculo.nombre} {vehiculo.contador}: ")
-            num_rot = int(num_rot)
+                while not num_rot.strip().isdecimal():
+                    num_rot = input(f"Ingrese la cantidad de veces que quiere rotar el {vehiculo.nombre} {vehiculo.contador}: ")
+                num_rot = int(num_rot)
+            else:
+                num_rot = random.randint(0,25)
             vehiculo.rotacion = 90*num_rot%360
 
 
-    def colocar_Vehiculo(self, vehiculo):
-        self.RotarVehiculo(vehiculo)
+    def colocar_Vehiculo(self, vehiculo, jugador):
+        self.RotarVehiculo(vehiculo, jugador)
         textcoor = "(x y z)" if vehiculo.rotacion in [0,180] else "(y x z)"
         nuc_x, nuc_y, nuc_z = preguntar_coordenadas(f"-{vehiculo.nombre} #{vehiculo.contador} {textcoor}: ",
-                                     f"Datos invalidos\nIngrese el nucleo de {vehiculo.nombre} {vehiculo.contador} {textcoor}: ",
+                                     f"Datos invalidos\nIngrese el nucleo de {vehiculo.nombre} {vehiculo.contador} {textcoor}: ",jugador,
                                      vehiculo.tamaño)
         
         while not self.check_solapa(vehiculo, nuc_x, nuc_y, nuc_z):
-            print("Solapamiento entre vehiculos. Ingrese otra vez")
+            if jugador == "Jugador1":
+                print("Solapamiento entre vehiculos. Ingrese otra vez")
             nuc_x, nuc_y, nuc_z = preguntar_coordenadas(f"-{vehiculo.nombre} #{vehiculo.contador} {textcoor}: ", 
-                                                        f"Datos invalidos\nIngrese el nucleo de {vehiculo.nombre} {vehiculo.contador} {textcoor}: ",
+                                                        f"Datos invalidos\nIngrese el nucleo de {vehiculo.nombre} {vehiculo.contador} {textcoor}: ",jugador,
                                                         vehiculo.tamaño)
         if vehiculo.rotacion in [90,270]:
             nuc_x, nuc_y = nuc_y, nuc_x
@@ -186,11 +199,10 @@ vehiculos = [Avion, Globo, Zeppelin, ElevadorEspacial]
 for vehiculo in vehiculos:
     vehic = vehiculo()
     for i in range(vehic.cantidad):  #iterar en base a la cantidad de cada vehiculo
-        tablero.colocar_Vehiculo(vehic)
-        tablero.mostrar_Tablero(vehic)
+        tablero.colocar_Vehiculo(vehic,"Jugad")
+tablero.mostrar_Tablero(vehic)
         
-
-
+        
 
 
 
