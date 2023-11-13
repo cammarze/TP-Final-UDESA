@@ -3,14 +3,6 @@ import numpy as np
 import math
 
 
-def chequear_solapamiento(vehiculo, nucleo, espacio):
-    if type(vehiculo) == Globo:
-        pass
-    return np.all(espacio[nucleo[0]-1:nucleo[0]+2,nucleo[1]-1:nucleo[1]+2,nucleo[2]-1:nucleo[2]+2]<0)
-
-
-
-
 def preguntar_coordenadas(prompt: str, prompt_fallido: str,tamaño : tuple = (0,0,0)):
     coordenada = input(prompt)
     while len(coordenada.split()) != 3 or not chequear_coordenadas(coordenada, *tamaño):
