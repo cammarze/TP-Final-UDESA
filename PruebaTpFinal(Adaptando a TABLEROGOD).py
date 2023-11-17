@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.colors as plt_colors
 import numpy as np
 import math
 import random 
@@ -46,7 +47,6 @@ class Tablero:
         self.dim_x = dim_x
         self.dim_y = dim_y
         self.dim_z = dim_z
-
         self.tablero = np.zeros((dim_x, dim_y, dim_z))
 
     def check_solapa(self,vehiculo, nuc_x,nuc_y,nuc_z):
@@ -64,44 +64,23 @@ class Tablero:
             return np.all(self.tablero[nuc_x + check_x[0] : nuc_x + check_x[1] , nuc_y + check_y[0] : nuc_y + check_y[1] , nuc_z : nuc_z + 2]<=0)
        
         elif type(vehiculo) == Avion:
-            check_Avion1 = [1,2]
-            check_Avion2 = [-1,0]
-            if vehiculo.rotacion in [180,270]:
-                check_Avion1 = [0,1]
-                check_Avion2 = [2,3]
+            if vehiculo.rotacion in [0,90]:
+                    check_1 = 1
+                    check_2 = -1
+            else:
+                    check_1 = 0
+                    check_2 = 2
             if vehiculo.rotacion in [0,180]: 
-                return (np.all(self.tablero[nuc_x - 1 : nuc_x + 3 , nuc_y : nuc_y + 1 , nuc_z : nuc_z + 1]<=0) and 
-                np.all(self.tablero[nuc_x + check_Avion1[0] : nuc_x + check_Avion1[1] , nuc_y - 1 : nuc_y + 2 , nuc_z : nuc_z + 1]<=0) and 
-                np.all(self.tablero[nuc_x + check_Avion2[0] : nuc_x + check_Avion2[1] , nuc_y : nuc_y + 1 , nuc_z + 1 : nuc_z + 2]<=0))
+                return (np.all(self.tablero[nuc_x - 1 : nuc_x + 3 , nuc_y, nuc_z]<=0) and 
+                np.all(self.tablero[nuc_x + check_1, nuc_y - 1 : nuc_y + 2 , nuc_z]<=0) and 
+                np.all(self.tablero[nuc_x + check_2, nuc_y, nuc_z + 1]<=0))
             else:
-                return (np.all(self.tablero[ nuc_x : nuc_x + 1, nuc_y -1 : nuc_y + 3  , nuc_z : nuc_z + 1]<=0) and 
-                np.all(self.tablero[nuc_x - 1 : nuc_x + 2  , nuc_y + check_Avion1[0] : nuc_y + check_Avion1[1] , nuc_z : nuc_z + 1]<=0) and 
-                np.all(self.tablero[nuc_x : nuc_x + 1 , nuc_y + check_Avion2[0] : nuc_y + check_Avion2[1] , nuc_z + 1 : nuc_z + 2]<=0))
+                return (np.all(self.tablero[ nuc_x, nuc_y -1 : nuc_y + 3  , nuc_z]<=0) and 
+                np.all(self.tablero[nuc_x - 1 : nuc_x + 2  , nuc_y + check_1, nuc_z]<=0) and 
+                np.all(self.tablero[nuc_x, nuc_y + check_2, nuc_z + 1]<=0))
         else:    
-            return np.all(self.tablero[nuc_x  : nuc_x + 1 , nuc_y : nuc_y + 1 , 0 : 10]<=0)
+            return np.all(self.tablero[nuc_x, nuc_y, 0 : 10]<=0)
 
-
-    def colocar_avion(self, nuc_x, nuc_y, nuc_z, avion):
-            if avion.rotacion in [0,180]:
-                if avion.rotacion == 0:
-                    suma_x1 = [1,2]
-                    suma_x2 = [-1,0]
-                else:
-                    suma_x1 = [0,1]
-                    suma_x2 = [2,3]
-                self.tablero[nuc_x - 1 : nuc_x + 3 , nuc_y : nuc_y + 1 , nuc_z : nuc_z + 1] = 1
-                self.tablero[nuc_x + suma_x1[0] : nuc_x + suma_x1[1] , nuc_y - 1 : nuc_y + 2 , nuc_z : nuc_z + 1] = 1
-                self.tablero[nuc_x + suma_x2[0] : nuc_x + suma_x2[1] , nuc_y : nuc_y + 1 , nuc_z + 1 : nuc_z + 2] = 1
-            else:
-                if avion.rotacion == 90:
-                    suma_y1 = [1,2]
-                    suma_y2 = [-1,0]
-                else:
-                    suma_y1 = [0,1]
-                    suma_y2 = [2,3]
-                self.tablero[nuc_x : nuc_x + 1, nuc_y - 1 : nuc_y + 3  , nuc_z : nuc_z + 1] = 1
-                self.tablero[nuc_x - 1 : nuc_x + 2  , nuc_y + suma_y1[0] : nuc_y + suma_y1[1] , nuc_z : nuc_z + 1] = 1
-                self.tablero[ nuc_x : nuc_x + 1 , nuc_y + suma_y2[0] : nuc_y + suma_y2[1], nuc_z + 1 : nuc_z + 2] = 1
 
 
     def RotarVehiculo(self, vehiculo, jugador):
@@ -132,27 +111,45 @@ class Tablero:
         if vehiculo.rotacion in [90,270]:
             nuc_x, nuc_y = nuc_y, nuc_x
         if type(vehiculo) == Globo:
-            self.tablero[nuc_x - 1: nuc_x + 2, nuc_y - 1: nuc_y + 2, nuc_z -1: nuc_z + 2] = 1
+            self.tablero[nuc_x - 1: nuc_x + 2, nuc_y - 1: nuc_y + 2, nuc_z -1: nuc_z + 2] = 1 + type(vehiculo).contador/10
         elif type(vehiculo) == Zeppelin:
             if vehiculo.rotacion in [0,180]:
-                self.tablero[nuc_x - 2: nuc_x + 3, nuc_y: nuc_y + 2, nuc_z : nuc_z + 2] = 1
+                self.tablero[nuc_x - 2: nuc_x + 3, nuc_y: nuc_y + 2, nuc_z : nuc_z + 2] = 2 + type(vehiculo).contador/10
             else:
-                self.tablero[nuc_x: nuc_x + 2, nuc_y - 2: nuc_y + 3, nuc_z : nuc_z + 2] = 1
+                self.tablero[nuc_x: nuc_x + 2, nuc_y - 2: nuc_y + 3, nuc_z : nuc_z + 2] = 2 + type(vehiculo).contador/10
         elif type(vehiculo) == Avion:
-            self.colocar_avion(nuc_x, nuc_y, nuc_z,vehiculo)
+            if vehiculo.rotacion in [0,90]:
+                    suma_1 = 1
+                    suma_2 = -1
+            else:
+                    suma_1 = 0
+                    suma_2 = 2
+            if vehiculo.rotacion in [0,180]:
+                self.tablero[nuc_x - 1 : nuc_x + 3 , nuc_y, nuc_z] = 3 + type(vehiculo).contador/10
+                self.tablero[nuc_x + suma_1 , nuc_y - 1 : nuc_y + 2 , nuc_z] = 3 + type(vehiculo).contador/10
+                self.tablero[nuc_x + suma_2 , nuc_y, nuc_z + 1] = 3 + type(vehiculo).contador/10
+            else:
+                self.tablero[nuc_x, nuc_y - 1 : nuc_y + 3, nuc_z] = 3 + type(vehiculo).contador/10
+                self.tablero[nuc_x - 1 : nuc_x + 2, nuc_y + suma_1, nuc_z] = 3 + type(vehiculo).contador/10
+                self.tablero[nuc_x, nuc_y + suma_2, nuc_z + 1] = 3 + type(vehiculo).contador/10
         else:
-            self.tablero[nuc_x:nuc_x + 1, nuc_y: nuc_y + 1, 0 : 10] = 1 
-        vehiculo.contador += 1
+            self.tablero[nuc_x, nuc_y, 0 : 10] = 4 
+        type(vehiculo).contador += 1
+      
+    def agregar_colores(self):
+        tablero_plt = np.copy(self.tablero).astype(int)
+        colores = np.zeros(self.tablero.shape + (4,), dtype=np.float32)
+        colores[tablero_plt == 1] = plt_colors.to_rgba("darkred", alpha=0.7)
+        colores[tablero_plt == 2] = plt_colors.to_rgba("midnightblue", alpha=0.7)
+        colores[tablero_plt == 3] = plt_colors.to_rgba("lightgray", alpha=0.7) 
+        colores[tablero_plt == 4] = plt_colors.to_rgba("darkslategray", alpha=0.7)
+        return colores
     
-    
-    
-    
-    def mostrar_Tablero(self,vehiculo):
-        colores = {Avion: "lightgray", Globo: "darkred", Zeppelin: "midnightblue", ElevadorEspacial: "darkslategray"}
+    def mostrar_Tablero(self):
+        colores = self.agregar_colores()
         fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
         fig.set_size_inches(6, 6)
-        color = colores[type(vehiculo)]
-        ax.voxels(self.tablero, color="purple", edgecolor='k')
+        ax.voxels(self.tablero, facecolors=colores , edgecolor='k')
         plt.show()
 
 
@@ -161,22 +158,23 @@ class Vehiculo:
         self.nombre = nombre
         self.vida = vida
         self.cantidad = cantidad
-        self.contador = 0
         self.tamaño = tamaño
         self.rotacion = 0
+        dict_datos = {}
 
 
     
 class Globo(Vehiculo):
     def __init__(self):
         super().__init__(nombre="globo",vida=1, cantidad=5, tamaño=(3, 3, 3))
+    contador = 1
     
 
 
 class Zeppelin(Vehiculo):
     def __init__(self) -> None:
         super().__init__(nombre="zeppelin",vida = 3, cantidad = 2, tamaño = (5,2,2) )
-    
+    contador = 1
 
 
 
@@ -184,23 +182,32 @@ class Zeppelin(Vehiculo):
 class Avion(Vehiculo):
     def __init__(self) -> None:
         super().__init__(nombre="avion",vida= 2, cantidad = 3, tamaño = (4,3,2))
-    
+    contador = 1
 
 class ElevadorEspacial(Vehiculo):
     def __init__(self) -> None:
-        super().__init__(nombre="elevador espacial",vida=4, cantidad = 1, tamaño =(1,1,10)) #El tamaño en realidad es 10, pero 
-
+        super().__init__(nombre="elevador espacial",vida=4, cantidad = 1, tamaño =(1,1,10)) 
+    contador = 1
 
 
 
 
 tablero = Tablero()
-vehiculos = [Avion, Globo, Zeppelin, ElevadorEspacial]
+globo1 = Globo()
+globo2 = Globo()
+globo3 = Globo()
+globo4 = Globo()
+globo5 = Globo()
+zeppelin1 = Zeppelin()
+zeppelin2 = Zeppelin()
+avion1 = Avion()
+avion2 = Avion()
+avion3 = Avion()
+elevador_espacial1 = ElevadorEspacial()
+vehiculos = [globo1, globo2, globo3, globo4, globo5, zeppelin1, zeppelin2, avion1, avion2, avion3, elevador_espacial1]
 for vehiculo in vehiculos:
-    vehic = vehiculo()
-    for i in range(vehic.cantidad):  #iterar en base a la cantidad de cada vehiculo
-        tablero.colocar_Vehiculo(vehic,"Jugad")
-tablero.mostrar_Tablero(vehic)
+    tablero.colocar_Vehiculo(vehiculo,"Jugador1")
+    tablero.mostrar_Tablero()
         
         
 
