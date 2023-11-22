@@ -155,7 +155,14 @@ class Vehiculo:
         self.tamaño = tamaño
         self.rotacion = 0
 
-    
+    def derribado(self):
+        return not self.vida
+
+    def recibir_disparo(self): #VOLVER!
+        self.vida -= 1
+        if self.derribado():
+            pass
+
 class Globo(Vehiculo):
     def _init_(self):
         super()._init_(nombre="globo",vida=1, cantidad=5, tamaño=(3, 3, 3))
@@ -225,3 +232,5 @@ vehiculos = [elevador_espacial1, avion1, avion2, avion3, globo1, globo2, globo3,
 for vehiculo in vehiculos:
     tablero.colocar_Vehiculo(vehiculo,"Jugador1")
     tablero.mostrar_Tablero()
+
+
