@@ -99,15 +99,15 @@ class Tablero:
     def colocar_Vehiculo(self, vehiculo, jugador):
         self.RotarVehiculo(vehiculo, jugador)
         textcoor = "(x y z)" if vehiculo.rotacion in [0,180] else "(y x z)" #Si rotacion 90 ó 270, coloque primero la y
-        nuc_x, nuc_y, nuc_z = preguntar_coordenadas(f"-{vehiculo.nombre} #{vehiculo.contador} {textcoor}: ",
-                                     f"Datos invalidos\nIngrese el nucleo de {vehiculo.nombre} {vehiculo.contador} {textcoor}: ",jugador,
+        nuc_x, nuc_y, nuc_z = preguntar_coordenadas(f"-{vehiculo.nombre} #{vehiculo.contador + 1} {textcoor}: ",
+                                     f"Datos invalidos\nIngrese el nucleo de {vehiculo.nombre} {vehiculo.contador + 1} {textcoor}: ",jugador,
                                      vehiculo.tamaño)
         
         while not self.check_solapa(vehiculo, nuc_x, nuc_y, nuc_z):
             if jugador == "Jugador1":
                 print("Solapamiento entre vehiculos. Ingrese otra vez")
-            nuc_x, nuc_y, nuc_z = preguntar_coordenadas(f"-{vehiculo.nombre} #{vehiculo.contador} {textcoor}: ", 
-                                                        f"Datos invalidos\nIngrese el nucleo de {vehiculo.nombre} {vehiculo.contador} {textcoor}: ",jugador,
+            nuc_x, nuc_y, nuc_z = preguntar_coordenadas(f"-{vehiculo.nombre} #{vehiculo.contador + 1} {textcoor}: ", 
+                                                        f"Datos invalidos\nIngrese el nucleo de {vehiculo.nombre} {vehiculo.contador + 1} {textcoor}: ",jugador,
                                                         vehiculo.tamaño)
         if vehiculo.rotacion in [90,270]:
             nuc_x, nuc_y = nuc_y, nuc_x
@@ -208,7 +208,7 @@ class Vehiculo:
 class Globo(Vehiculo):
     def __init__(self):
         super().__init__(nombre="globo", vida=1, cantidad=5, tamaño=(3, 3, 3))
-    contador = 1
+    contador = 0
 
     def Posicion_tablero(self, tablero, nuc_x, nuc_y, nuc_z):
         return tablero[nuc_x - 1: nuc_x + 2, nuc_y - 1: nuc_y + 2, nuc_z -1: nuc_z + 2]    
@@ -217,7 +217,7 @@ class Globo(Vehiculo):
 class Zeppelin(Vehiculo):
     def __init__(self) -> None:
         super().__init__(nombre="zeppelin", vida = 3, cantidad = 2, tamaño = (5,2,2) )
-    contador = 1
+    contador = 0
 
     def Posicion_tablero(self, tablero, nuc_x, nuc_y, nuc_z):
         if self.rotacion in [0,180]:
@@ -229,7 +229,7 @@ class Zeppelin(Vehiculo):
 class Avion(Vehiculo):
     def __init__(self) -> None:
         super().__init__(nombre="avion", vida= 2, cantidad = 3, tamaño = (4,3,2))
-    contador = 1
+    contador = 0
 
     def Posicion_tablero(self,tablero, nuc_x, nuc_y, nuc_z):
         if self.rotacion in [0,90]:
@@ -252,7 +252,7 @@ class Avion(Vehiculo):
 class ElevadorEspacial(Vehiculo):
     def __init__(self) -> None:
         super().__init__(nombre="elevador espacial",vida=4, cantidad = 1, tamaño =(1,1,10)) 
-    contador = 1
+    contador = 0
     
     def Posicion_tablero(self,tablero, nuc_x, nuc_y, nuc_z):
         return tablero[nuc_x, nuc_y, 0 : 10]
@@ -279,13 +279,13 @@ def main():
         tablero.colocar_Vehiculo(vehiculo,"Jugador")
         enemigo.colocar_Vehiculo(vehiculo,"Jugador2")
     tablero.mostrar_Tablero()
-    #enemigo.mostrar_Tablero()
+    enemigo.mostrar_Tablero()
     hola = input("Ingresa algo: ")
     while hola != "-1":
         tablero.disparo(enemigo)
         hola = input("Ingresa -1 cuando quieras salir del while: ")
         tablero.mostrar_Tablero()
-        #enemigo.mostrar_Tablero()
+        enemigo.mostrar_Tablero()
 
 if __name__ == "__main__":
     main()
