@@ -40,15 +40,15 @@ def chequear_coordenadas(texto_num:str, tamaño_x: int = 0, tamaño_y: int = 0, 
     
 
 class Tablero:
-    def _init_(self, dim_x=15, dim_y=15, dim_z=10):
+    def __init__(self, dim_x=15, dim_y=15, dim_z=10):
 
         self.dim_x = dim_x
         self.dim_y = dim_y
         self.dim_z = dim_z
         self.tablero = np.zeros((dim_x, dim_y, dim_z))
         self.disp_tablero = np.zeros((dim_x,dim_y,dim_z))
-        self.dict_disparos = {}
-        self.dict_vehiculos = {} #Guarda posicion de vehiculos
+        self.guardar_disparos = {} #Guarda lugares "disparados"
+        self.guardar_vehiculos = {} #Guarda posicion de vehiculos
 
 
     def check_solapa(self,vehiculo, nuc_x,nuc_y,nuc_z):
@@ -122,33 +122,75 @@ class Tablero:
             tablero_pos1 += 3 + type(vehiculo).contador / 10
             tablero_pos2 += 3 + type(vehiculo).contador / 10
             tablero_pos3 += 3 + type(vehiculo).contador / 10
+            self.tablero[self.tablero == (3 + type(vehiculo).contador / 10)*2] = 3 + type(vehiculo).contador / 10
         else:
             tablero_pos = vehiculo.Posicion_tablero(self.tablero, nuc_x, nuc_y, nuc_z)
             tablero_pos += 4 
         type(vehiculo).contador += 1 #Cuenta la cantidad colocada de cada vehiculo
-        self.dict_vehiculos[self.tablero[nuc_x, nuc_y, nuc_z]] = (type(vehiculo), (nuc_x,nuc_y,nuc_z))
+
+        self.guardar_vehiculos[self.tablero[nuc_x, nuc_y, nuc_z]] = (vehiculo, (nuc_x,nuc_y,nuc_z)) #Guarda la posicion del vehiculo colocado
 
       
     def agregar_colores(self):
         tablero_plt = np.copy(self.tablero).astype(int) #Copia el tablero pero con sus valores en int/enteros
+        disp_tablero_plt = np.copy(self.disp_tablero).astype(int)
         colores = np.zeros(self.tablero.shape + (4,), dtype=np.float32) #Le agrega una cuarta dimension para poder meterle colores
-        colores[tablero_plt == 1] = plt_colors.to_rgba("darkred", alpha=0.7)
-        colores[tablero_plt == 2] = plt_colors.to_rgba("midnightblue", alpha=0.7)
-        colores[tablero_plt == 3] = plt_colors.to_rgba("lightgray", alpha=0.7) 
-        colores[tablero_plt == 4] = plt_colors.to_rgba("darkslategray", alpha=0.7)
-        return colores
+        colores_disp = np.zeros(self.tablero.shape + (4,), dtype=np.float32)
+        
+        colores[tablero_plt == 1] = plt_colors.to_rgba("darkred", alpha=0.7)          #Globo
+        colores[tablero_plt == 2] = plt_colors.to_rgba("midnightblue", alpha=0.7)     #Zeppelin
+        colores[tablero_plt == 3] = plt_colors.to_rgba("lightgray", alpha=0.7)        #Avion
+        colores[tablero_plt == 4] = plt_colors.to_rgba("darkslategray", alpha=0.7)    #Elevador espacial
+        
+        colores_disp[disp_tablero_plt == -1] = plt_colors.to_rgba("red", alpha=0.4)   #Miss
+        colores_disp[disp_tablero_plt == -2] = plt_colors.to_rgba("green", alpha=0.4) #Hit
+        colores_disp[disp_tablero_plt == -3] = plt_colors.to_rgba ("gray", alpha=0.4) #Sunk
+        return colores, colores_disp 
+
+    def disparo(self, enemigo):
+        coor_x, coor_y, coor_z = preguntar_coordenadas("Ingrese las coordenadas: ",
+                                            "Coordenadas invalidas\nIngrese nuevamente las coordenadas: ", "Jugador1")
+        
+        while (coor_x, coor_y, coor_z) in self.guardar_disparos or enemigo.tablero[coor_x, coor_y, coor_z] < 0: #Chequeo que el disparo no sea repetido
+            print("Esta coordenada ya fue ingresada anteriormente.")
+            coor_x, coor_y, coor_z = preguntar_coordenadas("Ingrese las coordenadas nuevamente: ",
+                                                "Coordenadas invalidas\nIngrese nuevamente las coordenadas: ", "Jugador1")
+
+        valor_coordenada = enemigo.tablero[coor_x, coor_y, coor_z] #Coordenada ingresada
+
+        if valor_coordenada in enemigo.guardar_vehiculos: #Chequeo si hay algun vehiculo
+            enemigo.guardar_vehiculos[valor_coordenada][0].vida -= 1
+
+            #El vehiculo fue tocado    
+            self.guardar_disparos[(coor_x, coor_y, coor_z)] = "Hit"
+            self.disp_tablero[coor_x, coor_y, coor_z] = -2
+
+            #El vehículo fue derribado
+            if not enemigo.guardar_vehiculos[valor_coordenada][0].vida:
+                self.disp_tablero[enemigo.tablero == valor_coordenada] = -3 #Le asigno un valor para el cambio del colorcito
+                enemigo.tablero[enemigo.tablero == valor_coordenada] = -3
+                self.guardar_disparos[(coor_x, coor_y, coor_z)] = "Sunk"
+                print("Resultado: < Hundido >")
+            else:
+                print("Resultado: < Tocado >")
+
+        else: #No se hallo ningun vehiculo en la coordenada ingresada
+            self.guardar_disparos[(coor_x, coor_y, coor_z)] = "Miss"
+            self.disp_tablero[coor_x, coor_y, coor_z] = -1
+            print("Resultado: < Errado >")
     
     def mostrar_Tablero(self):
-        colores = self.agregar_colores()
+        colores, colores_disp = self.agregar_colores()
         fig, (ax1,ax2) = plt.subplots(1,2, subplot_kw={"projection": "3d"})
         fig.set_size_inches(6, 6)
-        ax1.voxels(self.tablero, facecolors=colores , edgecolor='k')
-        ax2.voxels(self.disp_tablero)
+    
+        ax1.voxels(self.tablero, facecolors=colores , edgecolor='k') #Nuestro tablero
+        ax2.voxels(self.disp_tablero, facecolors=colores_disp) #Tablero de nuestros disparos (tablero del enemigo)
         plt.show()
 
 
 class Vehiculo:
-    def _init_(self, nombre, vida, cantidad, tamaño):
+    def __init__(self, nombre, vida, cantidad, tamaño):
         self.nombre = nombre
         self.vida = vida
         self.cantidad = cantidad
@@ -158,14 +200,14 @@ class Vehiculo:
     def derribado(self):
         return not self.vida
 
-    def recibir_disparo(self): #VOLVER!
+    def recibir_disparo(self): #HACER!
         self.vida -= 1
         if self.derribado():
             pass
 
 class Globo(Vehiculo):
-    def _init_(self):
-        super()._init_(nombre="globo",vida=1, cantidad=5, tamaño=(3, 3, 3))
+    def __init__(self):
+        super().__init__(nombre="globo", vida=1, cantidad=5, tamaño=(3, 3, 3))
     contador = 1
 
     def Posicion_tablero(self, tablero, nuc_x, nuc_y, nuc_z):
@@ -173,8 +215,8 @@ class Globo(Vehiculo):
     
 
 class Zeppelin(Vehiculo):
-    def _init_(self) -> None:
-        super()._init_(nombre="zeppelin",vida = 3, cantidad = 2, tamaño = (5,2,2) )
+    def __init__(self) -> None:
+        super().__init__(nombre="zeppelin", vida = 3, cantidad = 2, tamaño = (5,2,2) )
     contador = 1
 
     def Posicion_tablero(self, tablero, nuc_x, nuc_y, nuc_z):
@@ -185,8 +227,8 @@ class Zeppelin(Vehiculo):
 
 
 class Avion(Vehiculo):
-    def _init_(self) -> None:
-        super()._init_(nombre="avion",vida= 2, cantidad = 3, tamaño = (4,3,2))
+    def __init__(self) -> None:
+        super().__init__(nombre="avion", vida= 2, cantidad = 3, tamaño = (4,3,2))
     contador = 1
 
     def Posicion_tablero(self,tablero, nuc_x, nuc_y, nuc_z):
@@ -200,6 +242,7 @@ class Avion(Vehiculo):
             return (tablero[nuc_x - 1 : nuc_x + 3 , nuc_y, nuc_z], 
                     tablero[nuc_x + suma_1 , nuc_y - 1 : nuc_y + 2 , nuc_z], 
                     tablero[nuc_x + suma_2 , nuc_y, nuc_z + 1 : nuc_z + 2])
+
         else:
             return (tablero[nuc_x, nuc_y - 1 : nuc_y + 3, nuc_z], 
                     tablero[nuc_x - 1 : nuc_x + 2, nuc_y + suma_1, nuc_z], 
@@ -207,8 +250,8 @@ class Avion(Vehiculo):
         
 
 class ElevadorEspacial(Vehiculo):
-    def _init_(self) -> None:
-        super()._init_(nombre="elevador espacial",vida=4, cantidad = 1, tamaño =(1,1,10)) 
+    def __init__(self) -> None:
+        super().__init__(nombre="elevador espacial",vida=4, cantidad = 1, tamaño =(1,1,10)) 
     contador = 1
     
     def Posicion_tablero(self,tablero, nuc_x, nuc_y, nuc_z):
@@ -216,21 +259,33 @@ class ElevadorEspacial(Vehiculo):
 
 
 #Cuerpo
-tablero = Tablero()
-globo1 = Globo()
-globo2 = Globo()
-globo3 = Globo()
-globo4 = Globo()
-globo5 = Globo()
-zeppelin1 = Zeppelin()
-zeppelin2 = Zeppelin()
-avion1 = Avion()
-avion2 = Avion()
-avion3 = Avion()
-elevador_espacial1 = ElevadorEspacial()
-vehiculos = [elevador_espacial1, avion1, avion2, avion3, globo1, globo2, globo3, globo4, globo5, zeppelin1, zeppelin2]
-for vehiculo in vehiculos:
-    tablero.colocar_Vehiculo(vehiculo,"Jugador1")
+def main():
+
+    tablero = Tablero()
+    enemigo = Tablero()
+    globo1 = Globo()
+    globo2 = Globo()
+    globo3 = Globo()
+    globo4 = Globo()
+    globo5 = Globo()
+    zeppelin1 = Zeppelin()
+    zeppelin2 = Zeppelin()
+    avion1 = Avion()
+    avion2 = Avion()
+    avion3 = Avion()
+    elevador_espacial1 = ElevadorEspacial()
+    vehiculos = [elevador_espacial1, avion1, avion2, avion3, globo1, globo2, globo3, globo4, globo5, zeppelin1, zeppelin2]
+    for vehiculo in vehiculos:
+        tablero.colocar_Vehiculo(vehiculo,"Jugador")
+        enemigo.colocar_Vehiculo(vehiculo,"Jugador2")
     tablero.mostrar_Tablero()
+    #enemigo.mostrar_Tablero()
+    hola = input("Ingresa algo: ")
+    while hola != "-1":
+        tablero.disparo(enemigo)
+        hola = input("Ingresa -1 cuando quieras salir del while: ")
+        tablero.mostrar_Tablero()
+        #enemigo.mostrar_Tablero()
 
-
+if __name__ == "__main__":
+    main()
