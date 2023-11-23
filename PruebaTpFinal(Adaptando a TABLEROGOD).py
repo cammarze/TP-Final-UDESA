@@ -20,22 +20,22 @@ def preguntar_coordenadas(prompt: str, prompt_fallido: str, jugador,tamaño : tu
     return map(int,coordenada.split())
 
 def chequear_coordenadas(texto_num:str, tamaño_x: int = 0, tamaño_y: int = 0, tamaño_z: int = 0) -> bool:
-    lista_num = texto_num.split()
+    lista_coor = texto_num.split()
     Chequeo = 0
 
-    for elemento in lista_num:
+    for elemento in lista_coor:
         if not elemento.isdecimal():
             return False
     Chequeo_x = math.ceil(tamaño_x/2 - 1) if tamaño_x > 0 else 0
     Chequeo_y = math.ceil(tamaño_y/2 - 1) if tamaño_y > 0 else 0
     Chequeo_z = math.ceil(tamaño_z/2 - 1) if tamaño_z > 0 else 0
-    if Chequeo_x <= int(lista_num[0]) < (15 - tamaño_x//2):
+    if Chequeo_x <= int(lista_coor[0]) < (15 - tamaño_x//2):
         Chequeo += 1
-    if Chequeo_y <= int(lista_num[1]) < (15 - tamaño_y//2):
+    if Chequeo_y <= int(lista_coor[1]) < (15 - tamaño_y//2):
         Chequeo += 1
-    if Chequeo_z <= int(lista_num[2]) < (10 - tamaño_z//2) or tamaño_z == 10:
+    if Chequeo_z <= int(lista_coor[2]) < (10 - tamaño_z//2) or (tamaño_z == 10 and 0 <= int(lista_coor[2]) < 10):
         Chequeo += 1
-    if Chequeo == len(lista_num):
+    if Chequeo == len(lista_coor):
         return True
     else: 
         return False
@@ -48,6 +48,9 @@ class Tablero:
         self.dim_y = dim_y
         self.dim_z = dim_z
         self.tablero = np.zeros((dim_x, dim_y, dim_z))
+        self.disp_tablero = np.zeros((dim_x,dim_y,dim_z))
+        self.dict_disparos = {}
+        self.dict_vehiculos = {}
 
     def check_solapa(self,vehiculo, nuc_x,nuc_y,nuc_z):
         if vehiculo.rotacion in [90,270]:
@@ -110,31 +113,24 @@ class Tablero:
                                                         vehiculo.tamaño)
         if vehiculo.rotacion in [90,270]:
             nuc_x, nuc_y = nuc_y, nuc_x
+
         if type(vehiculo) == Globo:
-            self.tablero[nuc_x - 1: nuc_x + 2, nuc_y - 1: nuc_y + 2, nuc_z -1: nuc_z + 2] = 1 + type(vehiculo).contador/10
+            tablero_pos = vehiculo.Posicion_tablero(self.tablero, nuc_x, nuc_y, nuc_z) 
+            tablero_pos += 1 + type(vehiculo).contador / 1
         elif type(vehiculo) == Zeppelin:
-            if vehiculo.rotacion in [0,180]:
-                self.tablero[nuc_x - 2: nuc_x + 3, nuc_y: nuc_y + 2, nuc_z : nuc_z + 2] = 2 + type(vehiculo).contador/10
-            else:
-                self.tablero[nuc_x: nuc_x + 2, nuc_y - 2: nuc_y + 3, nuc_z : nuc_z + 2] = 2 + type(vehiculo).contador/10
+            tablero_pos = vehiculo.Posicion_tablero(self.tablero, nuc_x, nuc_y, nuc_z)
+            tablero_pos += 2 + type(vehiculo).contador / 10
         elif type(vehiculo) == Avion:
-            if vehiculo.rotacion in [0,90]:
-                    suma_1 = 1
-                    suma_2 = -1
-            else:
-                    suma_1 = 0
-                    suma_2 = 2
-            if vehiculo.rotacion in [0,180]:
-                self.tablero[nuc_x - 1 : nuc_x + 3 , nuc_y, nuc_z] = 3 + type(vehiculo).contador/10
-                self.tablero[nuc_x + suma_1 , nuc_y - 1 : nuc_y + 2 , nuc_z] = 3 + type(vehiculo).contador/10
-                self.tablero[nuc_x + suma_2 , nuc_y, nuc_z + 1] = 3 + type(vehiculo).contador/10
-            else:
-                self.tablero[nuc_x, nuc_y - 1 : nuc_y + 3, nuc_z] = 3 + type(vehiculo).contador/10
-                self.tablero[nuc_x - 1 : nuc_x + 2, nuc_y + suma_1, nuc_z] = 3 + type(vehiculo).contador/10
-                self.tablero[nuc_x, nuc_y + suma_2, nuc_z + 1] = 3 + type(vehiculo).contador/10
+            tablero_pos1, tablero_pos2, tablero_pos3 = vehiculo.Posicion_tablero(self.tablero, nuc_x, nuc_y, nuc_z)
+            tablero_pos1 += 3 + type(vehiculo).contador / 10
+            tablero_pos2 += 3 + type(vehiculo).contador / 10
+            tablero_pos3 += 3 + type(vehiculo).contador / 10
         else:
-            self.tablero[nuc_x, nuc_y, 0 : 10] = 4 
+            tablero_pos = vehiculo.Posicion_tablero(self.tablero, nuc_x, nuc_y, nuc_z)
+            tablero_pos += 4 
         type(vehiculo).contador += 1
+        self.dict_vehiculos[self.tablero[nuc_x, nuc_y, nuc_z]] = (type(vehiculo), (nuc_x,nuc_y,nuc_z))
+
       
     def agregar_colores(self):
         tablero_plt = np.copy(self.tablero).astype(int)
@@ -147,9 +143,10 @@ class Tablero:
     
     def mostrar_Tablero(self):
         colores = self.agregar_colores()
-        fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+        fig, (ax1,ax2) = plt.subplots(1,2, subplot_kw={"projection": "3d"})
         fig.set_size_inches(6, 6)
-        ax.voxels(self.tablero, facecolors=colores , edgecolor='k')
+        ax1.voxels(self.tablero, facecolors=colores , edgecolor='k')
+        ax2.voxels(self.disp_tablero)
         plt.show()
 
 
@@ -160,7 +157,6 @@ class Vehiculo:
         self.cantidad = cantidad
         self.tamaño = tamaño
         self.rotacion = 0
-        dict_datos = {}
 
 
     
@@ -168,6 +164,9 @@ class Globo(Vehiculo):
     def __init__(self):
         super().__init__(nombre="globo",vida=1, cantidad=5, tamaño=(3, 3, 3))
     contador = 1
+
+    def Posicion_tablero(self, tablero, nuc_x, nuc_y, nuc_z):
+        return tablero[nuc_x - 1: nuc_x + 2, nuc_y - 1: nuc_y + 2, nuc_z -1: nuc_z + 2]    
     
 
 
@@ -175,6 +174,12 @@ class Zeppelin(Vehiculo):
     def __init__(self) -> None:
         super().__init__(nombre="zeppelin",vida = 3, cantidad = 2, tamaño = (5,2,2) )
     contador = 1
+
+    def Posicion_tablero(self, tablero, nuc_x, nuc_y, nuc_z):
+        if self.rotacion in [0,180]:
+            return tablero[nuc_x - 2: nuc_x + 3, nuc_y: nuc_y + 2, nuc_z : nuc_z + 2]
+        else:
+            return tablero[nuc_x: nuc_x + 2, nuc_y - 2: nuc_y + 3, nuc_z : nuc_z + 2]
 
 
 
@@ -184,11 +189,30 @@ class Avion(Vehiculo):
         super().__init__(nombre="avion",vida= 2, cantidad = 3, tamaño = (4,3,2))
     contador = 1
 
+    def Posicion_tablero(self,tablero, nuc_x, nuc_y, nuc_z):
+        if self.rotacion in [0,90]:
+            suma_1 = 1
+            suma_2 = -1
+        else:
+                suma_1 = 0
+                suma_2 = 2
+        if self.rotacion in [0,180]:
+            return (tablero[nuc_x - 1 : nuc_x + 3 , nuc_y, nuc_z], 
+                    tablero[nuc_x + suma_1 , nuc_y - 1 : nuc_y + 2 , nuc_z], 
+                    tablero[nuc_x + suma_2 , nuc_y, nuc_z + 1 : nuc_z + 2])
+        else:
+            return (tablero[nuc_x, nuc_y - 1 : nuc_y + 3, nuc_z], 
+                    tablero[nuc_x - 1 : nuc_x + 2, nuc_y + suma_1, nuc_z], 
+                    tablero[nuc_x, nuc_y + suma_2, nuc_z + 1 : nuc_z + 2])
+        
+
 class ElevadorEspacial(Vehiculo):
     def __init__(self) -> None:
         super().__init__(nombre="elevador espacial",vida=4, cantidad = 1, tamaño =(1,1,10)) 
     contador = 1
-
+    
+    def Posicion_tablero(self,tablero, nuc_x, nuc_y, nuc_z):
+        return tablero[nuc_x, nuc_y, 0 : 10]
 
 
 
@@ -204,12 +228,16 @@ avion1 = Avion()
 avion2 = Avion()
 avion3 = Avion()
 elevador_espacial1 = ElevadorEspacial()
-vehiculos = [globo1, globo2, globo3, globo4, globo5, zeppelin1, zeppelin2, avion1, avion2, avion3, elevador_espacial1]
+vehiculos = [elevador_espacial1, avion1, avion2, avion3, globo1, globo2, globo3, globo4, globo5, zeppelin1, zeppelin2]
 for vehiculo in vehiculos:
     tablero.colocar_Vehiculo(vehiculo,"Jugador1")
     tablero.mostrar_Tablero()
         
         
+
+
+
+
 
 
 
