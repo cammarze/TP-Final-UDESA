@@ -140,20 +140,20 @@ class Tablero:
             enemigo.guardar_vehiculos[valor_coordenada][0].vida -= 1
 
             #El vehiculo fue tocado    
-            self.guardar_disparos[(coor_x, coor_y, coor_z)] = "Hit"
+            self.guardar_disparos[(coor_x, coor_y, coor_z)] = None
             self.disp_tablero[coor_x, coor_y, coor_z] = -2
 
             #El vehículo fue derribado
             if not enemigo.guardar_vehiculos[valor_coordenada][0].vida:
                 self.disp_tablero[enemigo.tablero == valor_coordenada] = -3 #Le asigno un valor para el cambio del colorcito
                 enemigo.tablero[enemigo.tablero == valor_coordenada] = -3
-                self.guardar_disparos[(coor_x, coor_y, coor_z)] = "Sunk"
+                self.guardar_disparos[(coor_x, coor_y, coor_z)] = None
                 print("Resultado: < Hundido >")
             else:
                 print("Resultado: < Tocado >")
 
         else: #No se hallo ningun vehiculo en la coordenada ingresada
-            self.guardar_disparos[(coor_x, coor_y, coor_z)] = "Miss"
+            self.guardar_disparos[(coor_x, coor_y, coor_z)] = None
             self.disp_tablero[coor_x, coor_y, coor_z] = -1
             print("Resultado: < Errado >")
 
@@ -163,7 +163,10 @@ class Tablero:
         fig, (ax1,ax2) = plt.subplots(1,2, subplot_kw={"projection": "3d"})
         fig.set_size_inches(11, 6)
         
+        ax1.set_title ('Player Board',fontsize=12, color='black') 
         ax1.voxels(self.tablero, facecolors=colores , edgecolor='k') #Nuestro tablero
+
+        ax2.set_title('Hit board',fontsize=12, color='black') 
         ax2.voxels(self.disp_tablero, facecolors=colores_disp) #Tablero de nuestros disparos (tablero del enemigo)
         plt.show()
 
