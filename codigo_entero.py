@@ -125,12 +125,19 @@ class Tablero:
         return colores, colores_disp 
     
 
-    def disparo(self, enemigo):
+    def disparo(self, enemigo, jugador):
+
         coor_x, coor_y, coor_z = preguntar_coordenadas("Ingrese las coordenadas: ",
                                             "Coordenadas invalidas\nIngrese nuevamente las coordenadas: ", "Jugador1")
         
         while (coor_x, coor_y, coor_z) in self.guardar_disparos or enemigo.tablero[coor_x, coor_y, coor_z] < 0: #Chequeo que el disparo no sea repetido
-            print("Esta coordenada ya fue ingresada anteriormente.")
+            #print("Esta coordenada ya fue ingresada anteriormente.")
+            if jugador == 'jugador1':
+                if enemigo.tabkero[coor_x, coor_y, coor_z] < 0:
+                    print('disparo sobre vehiculo deribado')
+                else:
+                    print('esta coordenada ya fue ingresada anteriormente')
+                    
             coor_x, coor_y, coor_z = preguntar_coordenadas("Ingrese las coordenadas nuevamente: ",
                                                 "Coordenadas invalidas\nIngrese nuevamente las coordenadas: ", "Jugador1")
             
