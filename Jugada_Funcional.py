@@ -150,14 +150,14 @@ class Tablero:
             enemigo.guardar_vehiculos[valor_coordenada].recibir_disparo()
 
             #El vehiculo fue tocado    
-            self.guardar_disparos[(coor_x, coor_y, coor_z)] = "Hit"
+            self.guardar_disparos[(coor_x, coor_y, coor_z)] = None
             self.disp_tablero[coor_x, coor_y, coor_z] = -2
 
             #El vehículo fue derribado
             if enemigo.guardar_vehiculos[valor_coordenada].derribado():
                 self.disp_tablero[enemigo.tablero == valor_coordenada] = -3 #Le asigno un valor para el cambio del colorcito
                 enemigo.tablero[enemigo.tablero == valor_coordenada] = -3
-                self.guardar_disparos[(coor_x, coor_y, coor_z)] = "Sunk"
+                self.guardar_disparos[(coor_x, coor_y, coor_z)] = None
                 print(f"Resultado: < {enemigo.guardar_vehiculos[valor_coordenada].nombre.title()} Hundido a favor de {jugador}>")
                 enemigo.cantidad_vehiculos -= 1
             else:
@@ -165,7 +165,7 @@ class Tablero:
                     print("Resultado: < Tocado >")
 
         else: #No se hallo ningun vehiculo en la coordenada ingresada
-            self.guardar_disparos[(coor_x, coor_y, coor_z)] = "Miss"
+            self.guardar_disparos[(coor_x, coor_y, coor_z)] = None
             self.disp_tablero[coor_x, coor_y, coor_z] = -1
             if jugador == "Jugador1":
                 print("Resultado: < Errado >")
@@ -175,8 +175,11 @@ class Tablero:
         colores, colores_disp = self.agregar_colores()
         fig, (ax1,ax2) = plt.subplots(1,2, subplot_kw={"projection": "3d"})
         fig.set_size_inches(11, 6)
-        
+
+        ax1.set_title ('Player Board',fontsize=12, color='black') 
         ax1.voxels(self.tablero, facecolors=colores , edgecolor='k') #Nuestro tablero
+
+        ax2.set_title ('Hit Board',fontsize=12, color='black') 
         ax2.voxels(self.disp_tablero, facecolors=colores_disp) #Tablero de nuestros disparos (tablero del enemigo)
         plt.show()
 
@@ -276,7 +279,8 @@ def main():
     vehiculos = [globo1, globo2, globo3, globo4, globo5, zeppelin1, zeppelin2,  avion1, avion2, avion3,elevador_espacial1]
     enem_vehiculos = [enemigo_globo1, enemigo_globo2, enemigo_globo3, enemigo_globo4, enemigo_globo5, enemigo_zeppelin1, enemigo_zeppelin2,  enemigo_avion1, enemigo_avion2, enemigo_avion3,enemigo_elevador_espacial1]
     for vehiculo in vehiculos:
-        tablero.colocar_Vehiculo(vehiculo,"Jugador0")
+        tablero.colocar_Vehiculo(vehiculo,"Jugador1")
+
     for enem_vehiculo in enem_vehiculos:    
         enemigo.colocar_Vehiculo(enem_vehiculo,"Jugador2")
     tablero.mostrar_Tablero()
@@ -284,9 +288,11 @@ def main():
     while True:
         tablero.disparo(enemigo, "Jugador2")
         if enemigo.cantidad_vehiculos == 0:
+            print("Ganador Jugador 2")
             break
-        enemigo.disparo(tablero, "jugador3")
+        enemigo.disparo(tablero, "jugador1")
         if tablero.cantidad_vehiculos == 0:
+            print("Ganador Jugador 1")
             break
 
     tablero.mostrar_Tablero()
