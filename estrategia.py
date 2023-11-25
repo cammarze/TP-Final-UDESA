@@ -1,9 +1,3 @@
-import matplotlib.pyplot as plt
-import matplotlib.colors as plt_colors
-import numpy as np
-import math
-import random
-
 import codigo_entero as c
 
 def next_turn(coor_compu):
