@@ -30,7 +30,7 @@ def main():
     enem_vehiculos = [enemigo_globo1, enemigo_globo2, enemigo_globo3, enemigo_globo4, enemigo_globo5, enemigo_zeppelin1, enemigo_zeppelin2,  enemigo_avion1, enemigo_avion2, enemigo_avion3,enemigo_elevador_espacial1]
 
     for vehiculo in vehiculos:
-        tablero.colocar_Vehiculo(vehiculo,"Jugador0")
+        tablero.colocar_Vehiculo(vehiculo,"Jugador1")
         tablero.mostrar_Tablero()
 
     for enem_vehiculo in enem_vehiculos:    
