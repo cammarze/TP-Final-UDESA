@@ -144,10 +144,6 @@ class Tablero:
         Args:
         - enemigo: Tablero del enemigo
         - jugador: Identifica que jugador realiza el disparo ("jugador1" o "jugador2")
-
-        Note:
-        -Para "Jugador2" (computadora) si los vehiculos fueron derrotados, excepto el Elevador Espacial, los disparos son aleatorios.
-        Si encuentra un 'HIT', incrmenta la coordenada z en 1.
         """
         coor_x, coor_y, coor_z = f.preguntar_coordenadas("Ingrese las coordenadas del disparo: ",
                                                         "Coordenadas invalidas\nIngrese nuevamente las coordenadas: ", jugador)
