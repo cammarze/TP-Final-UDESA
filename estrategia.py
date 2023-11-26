@@ -26,7 +26,7 @@ def check_borde(x: int, y: int, z: int, diff: int = 0) -> tuple :
         #Me muevo a la siguiente diagonal
         if z > 9:
             x = 14
-            y -= 2
+            y -= 1
             z = 0
     return x, y, z
 
@@ -48,8 +48,8 @@ def next_turn(coor_compu):
     #Primera mitad
     if compu_x > compu_y:
         diff = compu_x - compu_y
-        if diff in [2, 4, 6, 8, 10, 12]:
-            compu_x, compu_y, compu_z = mov_diagonal(compu_x, compu_y, compu_z, 2, 2, diff)
+        if diff in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]:
+            compu_x, compu_y, compu_z = mov_diagonal(compu_x, compu_y, compu_z, 2, 1, diff)
 
         elif diff == 14:
             compu_z += 2
@@ -63,8 +63,8 @@ def next_turn(coor_compu):
     #Segunda mitad
     elif compu_x < compu_y:
         diff = compu_y - compu_x
-        if diff in [2, 4, 6, 8, 10, 12]:
-            compu_y, compu_x, compu_z = mov_diagonal(compu_y, compu_x, compu_z, 2, 2, diff)
+        if diff in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]:
+            compu_y, compu_x, compu_z = mov_diagonal(compu_y, compu_x, compu_z, 2, 1, diff)
 
         elif diff == 14:
             compu_z += 2
@@ -77,7 +77,7 @@ def next_turn(coor_compu):
 
     #Diagonal principal
     elif compu_x == compu_y:
-        compu_x, compu_y, compu_z = mov_diagonal(compu_x, compu_y, compu_z, 2, 2)
+        compu_x, compu_y, compu_z = mov_diagonal(compu_x, compu_y, compu_z, 2, 1)
         if compu_z > 9:
             compu_x = 14
             compu_y = 12
