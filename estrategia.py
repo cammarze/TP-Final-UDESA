@@ -2,6 +2,11 @@ import codigo_entero as c
 import random
 
 def check_borde(x, y, z, diff = 0):
+    """
+    Chequea si los valores de (x, y, z) se encuentran dentro de los limites tablero. Si se encuentran fuera,
+    cambia sus valores para
+    1) Resetea los valores
+    """
     #Llego al borde del tablero, recorro la misma diagonal pero mas arriba
     if y < 0:
         x = 14
