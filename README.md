@@ -1,92 +1,16 @@
-# Trabajo Final - Pensamiento Computacional: WarGames 
+# Modo de Juego #
 
-#### `<link>` : <https://udesa-pc.github.io/tps/tpf/> 
-##  Introduccion
-El cielo ha sido un campo de batalla durante siglos. Desde los primitivos globos aerostáticos hasta modernas naves espaciales, el control de los cielos ha sido vital para establecer la supremacía en el campo de batalla. En este desafío, te enfrentarás en una batalla aérea en 3D utilizando globos, zepelines, aviones, y elevadores espaciales. Tu objetivo: derribar las unidades enemigas antes de que te derriben a ti.
+# Colocacion de vehiculos
+Para colocar los vehiculos, el programa le pedira que ingrese 3 coordenadas (x, y, z). Estas corresponden al nucleo del vehiculo que se desea colocar. Las coordenadas deberan ser
+ingresadas en una misma linea, separadas por espacios (por ej: 5 5 5). Los valores maximos y minimos para las coordenadas del nucleo varian segun el vehiculo que quiera colocar.
+Tenga en cuenta que los valores maximos y minimos de (x, y) son 14 y 0, respectivamente, y el valor maximo y minimo de z es 9 y 0, respectivamente.
+Tambien se le pedira la rotacion del vehiculo. Debera ingresar cuantas veces lo quiere rotar 90°. Si no quiere rotarlo, debe ingresar 0 (o un multiplo de 4). Si desea rotarlo 90°,
+debe ingresar 1 (o 1 + cualquier multiplo de 4).Si desea rotarlo 180°, debe ingresar 2 (o 2 + cualquier multiplo de 4). Por ultimo, si quiere rotarlo 270°, debe ingresar 3 (o 3 + cualquier
+multiplo de 4). En esencia, el modulo entre el numero ingresado y 4 determinara la rotacion del vehiculo.
 
-## Especificaciones
-### - Tablero de juego
-+ Dimensiones del tablero  15 x 15 x 10
-	+ **X**  y **Y**  representan la superficie horizontal.
-	+ **Z**  representa la altura.
- 
-![](https://udesa-pc.github.io/tps/tpf/img/board.png)
-
-
-| Vehiculo  | Cantidad | Resistencia (número de golpes) | Tamaño (celdas) | Forma |
-| ------------- | ------------- | ------------- | ------------- | ------------- |
-| Globo  | 5 | 1 | 3x3x3 | ![](https://udesa-pc.github.io/tps/tpf/img/balloon.png) |
-| Zeppelin  | 2 | 3 | 5x2x2 | ![](https://udesa-pc.github.io/tps/tpf/img/zeppelin.png) |
-| Avión  | 3 | 2 | 4x3x2 (Forma “t”) | ![](https://udesa-pc.github.io/tps/tpf/img/plane.png) |
-| Elevador Espacial  | 1 | 4 | 1x1x10 | ![](https://udesa-pc.github.io/tps/tpf/img/elevator.png) |
-
-## Cómo Jugar
-##### Momento Inicial
-Cada jugador posiciona sus vehículos en el tablero. Los vehículos pueden ser rotados horizontalmente, pero no pueden superponerse. Los vehículos no pueden rotar verticalmente.
-
-##### Desarrollo del Juego
-El juego se desarrolla por turnos, donde cada jugador tiene oportunidad de realizar disparos contra el equipo oponente.
-
-##### Turno de Juego:
-+ **Disparo:** El jugador elige una coordenada para disparar.
-
-+ **Resultado:** Se verifica si el disparo tocó algún vehículo enemigo. Si es así, se reduce en uno la resistencia del vehículo tocado. Si la resistencia de un vehículo llega a cero, es considerado “derribado”. Si un vehículo es derribado, se revelan todas las coordenadas ocupadas por el vehículo.
-
-+ **Fin del Turno:** Una vez realizado el disparo, termina el turno del jugador y comienza el turno del oponente.
-
-### Reglas del Juego
-+ **Tocado:** Si una coordenada de un disparo coincide con una de las coordenadas ocupadas por un vehículo, se considera que ha sido “tocado”. La resistencia del vehículo se reduce en 1.
-
-+ **Derribado:** Cuando la resistencia de un vehículo llega a cero debido a uno o varios “tocado”, el vehículo es considerado “derribado” y ya no participa en el juego.
-
-+ **Tiro repetido:** Si un jugador dispara a una coordenada que ya ha sido disparada, no modifica la resistencia de ningún vehículo.
-
-+ **Fin del Juego:** El juego termina cuando todos los vehículos de un jugador han sido “derribados”. El jugador con vehículos aún en juego es declarado ganador.
-
-### Desarrollo
-Se debe implementar un programa en Python que permita jugar a la batalla aérea. El programa debe permitir jugar contra la computadora. Se debe programar una estrategia para la computadora para que pueda competir contra el jugador humano. La estrategia debe incluír información de los últimos movimientos, disparos y estado de los vehículos.
-
-Se deben implementar como mínimo las funciones con los siguientes prototipos para implementar el comportamiento de la computadora:
-
-```python
-def next_turn(hit_board: tuple) -> tuple:
-   	 """Returns the coordinates to shoot next.
-
-    Args:
-        hit_board (tuple): A 3D iterable of strings representing the hit board.
-        Each cell can be accessed by hit_board[x][y][z].
-
-        Each cell has 4 possible values:
-        - '?': No shot has been done there.
-        - 'HIT': An airship has been hit there before.
-        - 'MISS': A shot has been done there but did not hit any airship.
-        - 'SUNK': An airship was there but has already been shot down entirely.
-
-    Returns:
-        tuple: (x,y,z) to shoot at.
-    """
-```
-</pre>
-
-```python
-def get_starting_board():
-   	 """
-    Gives the board with the airships placed on it. The board is a 3D iterable of 
-    strings. 
-
-    Each cell has 12 possible values: 'EMPTY', 'BALLOON_0', 'BALLOON_1',
-    'BALLOON_2', 'BALLOON_3' 'BALLOON_4', 'ZEPPELIN_0', 'ZEPPELIN_1', 'PLANE_0',
-    'PLANE_1', 'PLANE_2', 'ELEVATOR'.
-
-    Returns:
-        tuple: A tuple of tuples of tuples of strings representing the board.
-        Each cell can be accessed by board[x][y][z].
-    """
-```
-</pre>
-
-### Interfaz
-La interfaz será principalmente a través de la línea de comando, donde los jugadores pueden ingresar coordenadas para disparar. Se espera una visualización en 3D utilizando matplotlib para mostrar el campo de batalla, los vehículos y el resultado de los disparos.
-
-### Evaluación
-Para aprobar, es fundamental que el código se ejecute correctamente sin lanzar excepciones; cumpliendo con los requerimientos de la consigna. Además, se evaluará la calidad del código y la calidad de los comentarios y documentación. Cualquier detalle adicional que agreguen será tenido en cuenta para la nota final.
+# Desarrollo
+Una vez colocados los vehiculos, se inicia la partida. Esta se desarrolla por turnos. En cada turno, el jugador debe ingresar las coordenadas a disparar. Estas deben ser ingresadas
+en una misma linea, separadas por espacios. Luego, se imprimira en pantalla el resultado del disparo. Este puede ser Errado (no habia ningun vehiculo), Tocado (habia un vehiculo pero
+este no fue derribado) o Hundido (habia un vehiculo y fue derribado). Si se ingresara una coordenada (x, y, z) que ya fue utilizida anteriormente o en la que se encuentra un vehiculo
+hundido, se solicitara que se ingrese la coordenada nuevamente. El juego termina cuando todos los vehiculos de un jugador hayan sido derribados. El ganador es el jugador que aun tiene
+vehiculos en pie.
