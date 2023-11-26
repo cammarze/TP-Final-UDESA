@@ -15,7 +15,7 @@ def preguntar_coordenadas(prompt: str, prompt_fallido: str, jugador : str,tamañ
     - tamano (tuple) : Tamano del tablero. Por default es (0,0,0)
     
     Returns:
-    - tuple: Tupla de ints que representan las coordenadas validas
+    - tuple --> Tupla de ints que representan las coordenadas validas ingresadas por el usuario ("jugador1") o generadas automaticamente para el jugador 2
     """
     if jugador == "Jugador1":
         coordenada = input(prompt)
@@ -29,6 +29,17 @@ def preguntar_coordenadas(prompt: str, prompt_fallido: str, jugador : str,tamañ
 
 
 def chequear_coordenadas(texto_num:str, tamaño_x: int = 0, tamaño_y: int = 0, tamaño_z: int = 0) -> bool:
+    """
+    Chequea si las coordenadas estan dentro de los limites del tamano del tablero.
+    Args:
+    - texto_num (str): Las coordenadas en formato de texto
+    - tamaño_x (int): Tamano del tablero en el eje X. Por default es 0
+    - tamaño_y (int): Tamano del tablero en el eje Y. Por default es 0
+    - tamano_z (int): Tamano del tablero en el eje Z. Por default es 0
+
+    Returns:
+    - bool --> Retornea True en caso de que las coordenadas estan dentro de los limitess del tablero. Flse caso contrario. 
+    """
     lista_coor = texto_num.split()
     Chequeo = 0
 
@@ -64,6 +75,9 @@ class Tablero:
 
         
     def check_solapa(self,vehiculo, nuc_x,nuc_y,nuc_z):
+        """
+        
+        """
         if vehiculo.rotacion in [90,270]:
             nuc_x, nuc_y = nuc_y, nuc_x #Invierto x e y
 
@@ -141,7 +155,7 @@ class Tablero:
     def disparo(self, enemigo, jugador):
 
         coor_x, coor_y, coor_z = preguntar_coordenadas("Ingrese las coordenadas: ",
-                                            "Coordenadas invalidas\nIngrese nuevamente las coordenadas: ", jugador)
+                                            "Coordenadas invalidas\nIngrese nuevamente las coordenadas: ", "Jugador1")
         
        
         while (coor_x, coor_y, coor_z) in self.guardar_disparos or enemigo.tablero[coor_x, coor_y, coor_z] < 0: #Chequeo que el disparo no sea repetido
@@ -153,7 +167,7 @@ class Tablero:
                     print("Esta coordenada ya fue ingresada anteriormente.")
 
             coor_x, coor_y, coor_z = preguntar_coordenadas("Ingrese las coordenadas nuevamente: ",
-                                                "Coordenadas invalidas\nIngrese nuevamente las coordenadas: ", jugador)
+                                                "Coordenadas invalidas\nIngrese nuevamente las coordenadas: ", "Jugador1")
             
         valor_coordenada = enemigo.tablero[coor_x, coor_y, coor_z] #Coordenada ingresada
 
