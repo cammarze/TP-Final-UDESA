@@ -5,7 +5,18 @@ import math
 import random 
 
 
-def preguntar_coordenadas(prompt: str, prompt_fallido: str, jugador,tamaño : tuple = (0,0,0),):
+def preguntar_coordenadas(prompt: str, prompt_fallido: str, jugador : str,tamaño : tuple = (0,0,0),):
+    """
+    Pregunta al jugador coordenadas (x,y,z) para la ubicacion de vehiculos dentro del tablero
+    Args:
+    - prompt (str): Mensaje para la solicitud de coordenadas (x,y,z)
+    - prompt_fallido (str): Mensaje de error para coordenadas invalidas
+    - jugador (str) : Se identifica al jugador
+    - tamano (tuple) : Tamano del tablero. Por default es (0,0,0)
+    
+    Returns:
+    - tuple: Tupla de ints que representan las coordenadas validas
+    """
     if jugador == "Jugador1":
         coordenada = input(prompt)
         while len(coordenada.split()) != 3 or not chequear_coordenadas(coordenada, *tamaño):
