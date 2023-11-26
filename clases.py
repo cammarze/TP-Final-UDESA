@@ -17,7 +17,7 @@ class Tablero:
         self.guardar_vehiculos = {} #Guarda posicion de vehiculos
 
         
-    def check_solapa(self,vehiculo, nuc_x,nuc_y,nuc_z):
+    def check_solapa(self,vehiculo: object, nuc_x: int,nuc_y:int,nuc_z:int) -> bool:
         """
         Chequea superposicion entre los vehiculos
         Args:
@@ -39,7 +39,7 @@ class Tablero:
             Tablero_pos = vehiculo.Posicion_tablero(self.tablero, nuc_x, nuc_y, nuc_z)
             return np.all(Tablero_pos<=0)
        
-    def RotarVehiculo(self, vehiculo, jugador):
+    def RotarVehiculo(self, vehiculo:object, jugador: str) -> None:
         """
         Rota el vehiculo
         Para "Jugador1" --> pregunta al jugador la cantidad de veces que lo desea rotar
@@ -61,7 +61,7 @@ class Tablero:
             vehiculo.rotacion = 90*num_rot%360 #Solo te puede dar 0, 90, 180, 270
 
 
-    def colocar_Vehiculo(self, vehiculo, jugador):
+    def colocar_Vehiculo(self, vehiculo: object, jugador: str) -> None:
         """
         Ubica los vehiculos segun coordenadas ingresadas
         ------------------------------------------------
@@ -104,7 +104,7 @@ class Tablero:
         self.guardar_vehiculos[self.tablero[nuc_x, nuc_y, nuc_z]] = vehiculo #Guarda la posicion del vehiculo colocado    
    
 
-    def agregar_colores(self):
+    def agregar_colores(self) -> tuple[np.ndarray]:
         """
         Le asigna colores asociados a los distintos tipos de vehiculos ubicado en el tablero
         --------------------------------------------------------------------------
@@ -133,7 +133,7 @@ class Tablero:
     
 
 
-    def disparo(self, enemigo, jugador):
+    def disparo(self, enemigo: object, jugador:object) -> None:
         """
         Realiza un disparo sobre el tablero enemigo
         -------------------------------------------
@@ -200,7 +200,7 @@ class Tablero:
         print("-------------------------")
 
 
-    def mostrar_Tablero(self):
+    def mostrar_Tablero(self) -> None:
         """
 
         Muestra los tableros del juego 
@@ -229,7 +229,7 @@ class Vehiculo:
         self.tamaño = tamaño
         self.rotacion = 0
 
-    def derribado(self): #si el vehiculo fue derribado o no
+    def derribado(self) -> bool: #si el vehiculo fue derribado o no
         return not self.vida #True si el vehiculo fue derribado, False caso contrario
     
     def recibir_disparo(self): 
@@ -241,7 +241,7 @@ class Globo(Vehiculo):
         super().__init__(nombre="globo", vida=1, tamaño=(3, 3, 3))
     contador = 0
 
-    def Posicion_tablero(self, tablero, nuc_x, nuc_y, nuc_z):
+    def Posicion_tablero(self, tablero: object, nuc_x: int, nuc_y: int, nuc_z:int) -> np.ndarray:
         """
         retorna la posicion actual del globo en el tablero
 
@@ -261,7 +261,7 @@ class Zeppelin(Vehiculo):
         super().__init__(nombre="zeppelin", vida = 3, tamaño = (5,2,2) )
     contador = 0
 
-    def Posicion_tablero(self, tablero, nuc_x, nuc_y, nuc_z):
+    def Posicion_tablero(self, tablero:object, nuc_x:int, nuc_y:int, nuc_z:int) -> np.ndarray:
         """
         retorna la posicion actual del Zeppelin en el tablero
 
@@ -283,7 +283,7 @@ class Avion(Vehiculo):
         super().__init__(nombre="avion", vida= 2, tamaño = (4,3,2))
     contador = 0
 
-    def Posicion_tablero(self,tablero, nuc_x, nuc_y, nuc_z):
+    def Posicion_tablero(self,tablero:object, nuc_x:int, nuc_y:int, nuc_z:int) -> tuple[np.ndarray]:
         """
         retorna la posicion actual del Avion en el tablero
 
@@ -314,7 +314,7 @@ class ElevadorEspacial(Vehiculo):
     def __init__(self) -> None:
         super().__init__(nombre="elevador espacial",vida=4, tamaño =(1,1,10)) 
     contador = 0
-    def Posicion_tablero(self,tablero, nuc_x, nuc_y, nuc_z):
+    def Posicion_tablero(self,tablero: object, nuc_x: int, nuc_y: int, nuc_z: int) -> np.ndarray:
         """
         retorna la posicion actual del Elevador Espacial en el tablero
 
